@@ -1,1 +1,2 @@
 from .user_serializer import UserSerializer
+from .instance_serializer import InstanceSerializer
