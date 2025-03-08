@@ -7,6 +7,7 @@ from rest_framework.request import Request
 from ..helpers.scripts import custom_response, error_response
 from rest_framework.renderers import JSONRenderer
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.timezone import now
 
 
 class InstanceView(ModelViewSet):
@@ -30,7 +31,8 @@ class InstanceView(ModelViewSet):
             print(project)
             instance: Instance = Instance.objects.get(project=project)
             subscription: Subscriptions = Subscriptions.objects.get(instance=instance)
-
+            subscription.last_checkin = now()
+            subscription.save()
             return custom_response(
                 status=200,
                 data={
@@ -48,6 +50,7 @@ class InstanceView(ModelViewSet):
                 error="Object Not Found:" + str(e)
             )
         except Exception as e:
+            print("unknown exception: ", e)
             return error_response(
                 status=400,
                 error="Unknown Exception:" + str(e)
